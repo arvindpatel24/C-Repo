@@ -1,0 +1,236 @@
+#define X1 150
+#define X2 250
+#define X3 350
+#define X4 450
+#define Y1 50
+#define Y2 150
+#define Y3 250
+#define Y4 350
+
+#include <dos.h>
+#include <graphics.h>
+#include <stdio.h>
+#include <conio.h>
+#include <string.h>
+union REGS in, out;
+int A[3][3],win1=0,win2=0;
+char p1[50],p2[50];
+void starting()
+{	setcolor(LIGHTRED);
+	settextstyle(7,0,8);
+	outtextxy(50,220,"TIC-TAC-TOE");
+	delay(1000);
+	setcolor(YELLOW);
+	settextstyle(1,0,1);
+	outtextxy(220,370,"Press Space Bar To PLAY...");
+	getch();
+	cleardevice();
+	setcolor(CYAN);
+	printf("Enter name of Player 1:");
+	gets(p1);
+	printf("\nEnter name of Player 2:");
+	gets(p2);
+	cleardevice();
+
+}
+void showmouse_graphics ()
+ {
+   in.x.ax = 1;
+   int86 (0X33,&in,&out);
+
+ }
+void box(int &a,int &b,int &c,int &d)
+ {	if((a>X1)&&(a<X2)&&(b>Y1)&&(b<Y2))
+	{	a=X1;b=Y1;c=X2;d=Y2; }
+	if((a>X2)&&(a<X3)&&(b>Y1)&&(b<Y2))
+	{	a=X2;b=Y1;c=X3;d=Y2; }
+	if((a>X3)&&(a<X4)&&(b>Y1)&&(b<Y2))
+	{	a=X3;b=Y1;c=X4;d=Y2; }
+	if((a>X1)&&(a<X2)&&(b>Y2)&&(b<Y3))
+	{	a=X1;b=Y2;c=X2;d=Y3; }
+	if((a>X2)&&(a<X3)&&(b>Y2)&&(b<Y3))
+	{	a=X2;b=Y2;c=X3;d=Y3; }
+	if((a>X3)&&(a<X4)&&(b>Y2)&&(b<Y3))
+	{	a=X3;b=Y2;c=X4;d=Y3; }
+	if((a>X1)&&(a<X2)&&(b>Y3)&&(b<Y4))
+	{	a=X1;b=Y3;c=X2;d=Y4; }
+	if((a>X2)&&(a<X3)&&(b>Y3)&&(b<Y4))
+	{	a=X2;b=Y3;c=X3;d=Y4; }
+	if((a>X3)&&(a<X4)&&(b>Y3)&&(b<Y4))
+	{	a=X3;b=Y3;c=X4;d=Y4; }
+ }
+ void MarkPlayer(int &a,int &b,int n)
+{
+	if((a>X1)&&(a<X2)&&(b>Y1)&&(b<Y2))
+		A[0][0]=n;
+	if((a>X2)&&(a<X3)&&(b>Y1)&&(b<Y2))
+		A[0][1]=n;
+	if((a>X3)&&(a<X4)&&(b>Y1)&&(b<Y2))
+		A[0][2]=n;
+	if((a>X1)&&(a<X2)&&(b>Y2)&&(b<Y3))
+		A[1][0]=n;
+	if((a>X2)&&(a<X3)&&(b>Y2)&&(b<Y3))
+		A[1][1]=n;
+	if((a>X3)&&(a<X4)&&(b>Y2)&&(b<Y3))
+		A[1][2]=n;
+	if((a>X1)&&(a<X2)&&(b>Y3)&&(b<Y4))
+		A[2][0]=n;
+	if((a>X2)&&(a<X3)&&(b>Y3)&&(b<Y4))
+		A[2][1]=n;
+	if((a>X3)&&(a<X4)&&(b>Y3)&&(b<Y4))
+		A[2][2]=n;
+}
+void win(int g,int h)
+{	if(A[g][h]==1)
+			win1=1;
+	else
+			win2=1;
+}
+void CheckForWin()
+{       int o;
+	if(((A[0][0])==(A[0][1]))&&((A[0][0])==(A[0][2])))
+	{	for(o=0;o<230;o++)
+		{line(((X1+X2)/2)-25,(Y1+Y2)/2,((X1+X2)/2)+o,(Y1+Y2)/2);
+		 delay(10);
+		}
+		win(0,0);
+	}
+	if(((A[1][0])==(A[1][1]))&&((A[1][0])==(A[1][2])))
+	{	for(o=0;o<230;o++)
+		{line(((X1+X2)/2)-25,(Y2+Y3)/2,((X1+X2)/2)+o,(Y2+Y3)/2);
+		 delay(10);
+		}
+		win(1,0);
+	}
+	if(((A[2][0])==(A[2][1]))&&((A[2][0])==(A[2][2])))
+	{       for(o=0;o<230;o++)
+		{line(((X1+X2)/2)-25,(Y3+Y4)/2,((X1+X2)/2)+o,(Y3+Y4)/2);
+		 delay(10);
+		}
+		win(2,0);
+	}
+	if(((A[0][0])==(A[1][0]))&&((A[0][0])==(A[2][0])))
+	{	for(o=0;o<230;o++)
+		{line(((X1+X2)/2),(Y2+Y1)/2-25,(X1+X2)/2,((Y2+Y1)/2)+o);
+		 delay(10);
+		}
+		win(0,0);
+	}
+	if(((A[0][1])==(A[1][1]))&&((A[0][1])==(A[2][1])))
+	{	for(o=0;o<230;o++)
+		{line(((X2+X3)/2),(Y2+Y1)/2-25,(X2+X3)/2,((Y2+Y1)/2)+o);
+		 delay(10);
+		}
+		win(0,1);
+	}
+	if(((A[0][2])==(A[1][2]))&&((A[0][2])==(A[2][2])))
+	{	for(o=0;o<230;o++)
+		{line(((X3+X4)/2),(Y2+Y1)/2-25,(X3+X4)/2,((Y2+Y1)/2)+o);
+		 delay(10);
+		}
+		win(0,2);
+	}
+	if(((A[0][0])==(A[1][1]))&&((A[1][1])==(A[2][2])))
+	{	for(o=0;o<230;o++)
+		{line(((X1+X2)/2)-25,(Y2+Y1)/2-25,((X1+X2)/2)+o,(Y2+Y1)/2+o);
+		 delay(10);
+		}
+		win(1,1);
+	}
+	if(((A[2][0])==(A[1][1]))&&((A[1][1])==(A[0][2])))
+	{	for(o=0;o<230;o++)
+		{line(((X1+X2)/2)-25,(Y3+Y4)/2+25,((X1+X2)/2)+o,(Y4+Y3)/2-o);
+		 delay(10);
+		}
+		win(1,1);
+	}
+
+}
+
+int main ()
+
+{
+ int gd= DETECT, gm;
+ initgraph(&gd, &gm, "c:\\turboc3\\bgi");
+ int chance=1,p=0,q=0,m,i,j,k=10;
+
+ for(i=0;i<3;i++)
+ {	for(j=0;j<3;j++)
+		A[i][j]=k++;                    //1
+ }
+ starting();
+
+ //detect_mouse ();
+ showmouse_graphics ();
+
+ setcolor(YELLOW);
+ line(X2,Y1,X2,Y4);
+ line(X3,Y1,X3,Y4);
+ line(X1,Y2,X4,Y2);
+ line(X1,Y3,X4,Y3);
+
+ while (!kbhit())
+    {
+     int x,y,e,f;
+     in.x.ax = 3;
+     int86 (0X33,&in,&out);
+     if (out.x.bx == 1)
+       {
+	 x = out.x.cx;
+	 y = out.x.dx;
+	// printf ("\nLeft || X - %d  Y - %d", x, y);
+	 e=x;
+	 f=y;
+	 box(x,y,p,q);
+	 m=chance%2;
+	 if(m)
+	 {	setcolor(BLUE);
+		circle(((x+p)/2),((y+q)/2),45);
+		MarkPlayer(e,f,m);
+
+	 }
+	 else
+	 {
+		setcolor(RED);
+		line(x,y,p,q);
+		line(x,q,p,y);
+		MarkPlayer(e,f,m);
+
+	 }
+	 CheckForWin();
+	 //printf("\n%d\t%d",win1,win2);
+	 chance++;                                //checkforwin
+       }
+
+       if(chance>9 || win1 || win2)
+		break;
+     delay (200);
+    }
+
+ if(win1>win2)
+ {	setcolor(BLUE);
+	settextstyle(6,0,3);
+	strcat(p1," WINS!!!");
+	outtextxy(230,390,p1);
+ }
+ else if(win2>win1)
+ {	setcolor(RED);
+	settextstyle(6,0,3);
+	strcat(p2," WINS!!!");
+	outtextxy(230,390,p2);
+ }
+ else
+ {	setcolor(YELLOW);
+	settextstyle(6,0,3);
+	outtextxy(230,390,"MATCH DRAW");
+ }
+ getch();
+ cleardevice();
+
+ setcolor(CYAN);
+ settextstyle(10,0,5);
+ outtextxy(120,210,"GAME OVER");
+ getch ();
+ closegraph ();
+ return 0;
+}
